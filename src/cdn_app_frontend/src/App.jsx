@@ -1,31 +1,29 @@
-import { useState } from 'react';
-import { cdn_app_backend } from 'declarations/cdn_app_backend';
+import { useState } from "react";
+import { cdn_app_backend } from "../../declarations/cdn_app_backend";
 
-function App() {
-  const [greeting, setGreeting] = useState('');
+export default function App() {
+  const [file, setFile] = useState(null);
+  const [url, setUrl] = useState("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    cdn_app_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
+  async function upload() {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = Array.from(new Uint8Array(e.target.result));
+      const id = crypto.randomUUID(); // unique ID
+      await cdn_app_backend.upload_file(id, file.name, file.type, data);
+      const canisterId = process.env.CANISTER_ID_CDN_APP_BACKEND;
+      setUrl(`https://${canisterId}.raw.icp0.io/file/${id}`);
+    };
+    reader.readAsArrayBuffer(file);
   }
 
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <div className="p-4">
+      <h1>CDN Uploader</h1>
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <button onClick={upload}>Upload</button>
+      {url && <p>File URL: <a href={url} target="_blank">{url}</a></p>}
+    </div>
   );
 }
-
-export default App;
