@@ -4,16 +4,11 @@
       "candid": "src/cdn_app_backend/cdn_app_backend.did",
       "package": "cdn_app_backend",
       "type": "rust"
-    },
+    }
+    ,
     "cdn_app_frontend": {
-      "dependencies": [
-        "cdn_app_backend"
-      ],
-      "source": [
-        "src/cdn_app_frontend/dist"
-      ],
       "type": "assets",
-      "workspace": "cdn_app_frontend"
+      "source": ["src/cdn_app_frontend/dist"]
     }
   },
   "defaults": {

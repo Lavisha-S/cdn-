@@ -1,0 +1,38 @@
+type Role = variant {
+  Admin;
+  Publisher;
+  Viewer;
+};
+
+type FileInfo = record {
+  id text;
+  filename text;
+  uploader text;
+  uploaded_at nat64;
+};
+
+type FileContents = record {
+  filename text;
+  content blob;
+};
+
+type ResultText = variant { ok text; err text };
+type ResultFile = variant { ok FileContents; err text };
+type ResultFileInfoVec = variant { ok vec FileInfo; err text };
+type ResultRoleVec = variant { ok vec Role; err text };
+
+service {
+  // Health
+  health: () -> (text) query;
+
+  // File operations
+  upload_file: (text, blob) -> (ResultText);
+  get_file: (text) -> (ResultFile) query;
+  list_files: () -> (ResultFileInfoVec) query;
+  delete_file: (text) -> (ResultText);
+
+  // Authorization
+  whoami: () -> (text, vec Role) query;
+  grant_role: (text, Role) -> (ResultRoleVec);
+  revoke_role: (text, Role) -> (ResultRoleVec);
+}

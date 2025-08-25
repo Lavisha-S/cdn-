@@ -7,10 +7,15 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-ic-cdk = "0.18.7"
-ic-cdk-macros = "0.18.7"
-candid = "0.10.0"
+ic-cdk = "0.10"
+ic-cdk-macros = "0.7"
+candid = "0.9"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 serde_bytes = "0.11"
-
+# removed uuid crate to avoid wasm RNG/runtime import issues; using internal id generator
+sha2 = "0.10"
+hex = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+lazy_static = "1.4"
+anyhow = "1.0"
