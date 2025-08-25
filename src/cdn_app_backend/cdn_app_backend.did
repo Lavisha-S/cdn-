@@ -3,7 +3,7 @@
 
 type Role = variant {
   Admin;
-  Uploader;
+  Publisher;
   Viewer;
 };
 

@@ -1,7 +1,7 @@
 // src/cdn_app_backend/src/services/file_service.rs
 
 use crate::auth::checks;
-use crate::auth::roles::Role;
+use crate::types::user::Role;
 use crate::file_store::{chunking, metadata, storage};
 use crate::types::{User, FileMetadata};
 use crate::errors::BackendError;
@@ -75,7 +75,7 @@ pub fn list_user_files(username: &str, user: &User) -> Result<Vec<FileMetadata>,
 mod tests {
     use super::*;
     use crate::types::User;
-    use crate::auth::roles::Role;
+    use crate::types::user::Role;
 
     fn make_user(role: Role) -> User {
         User {

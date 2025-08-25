@@ -2,7 +2,7 @@
 
 use candid::{CandidType, Deserialize};
 use ic_cdk::export::Principal;
-use crate::auth::roles::Role;
+use crate::types::user::Role;
 use crate::errors::error::BackendError;
 
 /// Metadata for a file stored in the CDN
@@ -10,12 +10,15 @@ use crate::errors::error::BackendError;
 pub struct FileMetadata {
     pub id: String,               // Unique file identifier (UUID or hash)
     pub owner: Principal,         // Owner of the file (uploader)
+    pub owner_id: String,         // Owner's user id (for logic)
     pub filename: String,         // Original file name
     pub size: u64,                // File size in bytes
     pub mime_type: String,        // MIME type (e.g., application/pdf)
     pub uploaded_at: u64,         // Timestamp of upload
     pub roles_allowed: Vec<Role>, // Roles allowed to access this file
     pub chunk_count: u32,         // Number of chunks if file is split
+    pub is_active: bool,          // File active status
+    pub file_hash: Option<String>,// Optional file hash
 }
 
 /// Represents a file chunk
@@ -42,12 +45,15 @@ impl FileMetadata {
         Self {
             id,
             owner,
+            owner_id: String::new(),
             filename,
             size,
             mime_type,
             uploaded_at,
             roles_allowed,
             chunk_count,
+            is_active: true,
+            file_hash: None,
         }
     }
 

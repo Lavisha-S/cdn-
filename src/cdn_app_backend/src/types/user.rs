@@ -3,9 +3,10 @@
 use crate::types::error::DomainError;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use candid::CandidType;
 
 /// Roles for the CDN system
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, CandidType)]
 pub enum Role {
     Admin,
     Publisher,
@@ -25,7 +26,7 @@ impl Role {
 }
 
 /// User struct
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, CandidType)]
 pub struct User {
     pub id: Uuid,
     pub username: String,

@@ -1,6 +1,6 @@
 // src/cdn_app_backend/src/auth/checks.rs
 
-use crate::auth::roles::Role;
+use crate::types::user::Role;
 use crate::types::User;
 use crate::errors::BackendError;
 
@@ -52,7 +52,7 @@ pub fn is_viewer(user: &User) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::auth::roles::Role;
+    use crate::types::user::Role;
     use crate::types::User;
 
     fn make_user(role: Role) -> User {

@@ -17,6 +17,12 @@ pub enum BackendError {
     Unauthorized(String),
     Forbidden(String),
 
+    // Validation/data errors
+    InvalidData(String),
+    ValidationError(String),
+    DuplicateFile,
+    FileNotFound,
+
     // General backend error
     Other(String),
 }

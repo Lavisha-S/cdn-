@@ -1,14 +1,7 @@
 // auth/roles.rs
-use crate::types::user::User;
-use crate::errors::error::BackendError;
 
-/// System roles
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Role {
-    Admin,
-    Publisher,
-    Viewer,
-}
+use crate::types::user::{User, Role};
+use crate::errors::error::BackendError;
 
 /// Actions that require permission checks
 #[derive(Debug, Clone, PartialEq, Eq)]

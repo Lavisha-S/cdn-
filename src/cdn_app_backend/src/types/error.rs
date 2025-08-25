@@ -21,6 +21,9 @@ pub enum DomainError {
     InvalidInput(String),
     UnauthorizedAccess(String),
 
+    // Permission errors
+    Forbidden(String),
+
     // General domain error
     Other(String),
 }
