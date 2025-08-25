@@ -1,0 +1,68 @@
+;; cdn_app_backend - Candid interface
+;; Place this file at: src/cdn_app_backend/cdn_app_backend.did
+
+type Role = variant {
+  Admin;
+  Publisher;
+  Viewer;
+};
+
+type FileInfo = record {
+  id: text;
+  filename: text;
+  uploader: text;
+  uploaded_at: nat64;
+};
+
+type FileContents = record {
+  filename: text;
+  content: blob;
+};
+
+type Config = record {
+  max_file_size_bytes: nat64;
+  uploads_enabled: bool;
+  cdn_domain: opt text;
+  last_updated_nanos: nat64;
+};
+
+type ResultText = variant { ok: text; err: text };
+type ResultBool = variant { ok: bool; err: text };
+type ResultFile = variant { ok: FileContents; err: text };
+type ResultFileInfoVec = variant { ok: vec FileInfo; err: text };
+type ResultConfig = variant { ok: Config; err: text };
+type ResultRoleVec = variant { ok: vec Role; err: text };
+type ResultRoleMap = variant { ok: vec (record { principal: text; roles: vec Role }); err: text };
+
+service : {
+  ;; Health & housekeeping
+  "health" : () -> (text) query;
+  "stats" : () -> (text) query;
+
+  ;; File operations
+  "upload_file" : (text, blob) -> (ResultText) update;       ;; (filename, content) -> ok:file_id | err:text
+  "get_file"    : (text) -> (ResultFile) query;              ;; (file_id) -> ok:{filename, content} | err:text
+  "list_files"  : () -> (ResultFileInfoVec) query;           ;; -> ok:vec<FileInfo> | err:text
+  "delete_file" : (text) -> (ResultText) update;             ;; (file_id) -> ok:text | err:text
+  "wipe_all"    : () -> (ResultText) update;                 ;; admin-only
+
+  ;; Chunked upload (optional)
+  "upload_file_chunk" : (text, blob, bool) -> (ResultText) update; ;; (filename, chunk, is_last) -> ok:file_id | err:text
+  "abort_chunked_upload" : (text) -> (ResultText) update;
+
+  ;; Authorization / role management
+  "whoami" : () -> (text, vec Role) query;
+  "grant_role" : (text, Role) -> (ResultRoleVec) update;    ;; (principal_text, role) -> ok:roles | err:text
+  "revoke_role" : (text, Role) -> (ResultRoleVec) update;
+  "list_roles_of" : (text) -> (ResultRoleVec) query;        ;; (principal_text) -> ok:roles | err:text
+  "list_all_user_roles" : () -> (ResultRoleMap) query;      ;; admin only
+
+  ;; Configuration
+  "get_config" : () -> (Config) query;
+  "update_config" : (opt nat64, opt bool, opt (opt text)) -> (ResultConfig) update;
+    ;; (max_file_size_bytes?, uploads_enabled?, cdn_domain?) -> ok:Config | err:text
+  "reset_config" : () -> (ResultConfig) update;
+
+  ;; Candid exporter
+  "__get_candid_interface_tmp_hack" : () -> (text) query;
+}
